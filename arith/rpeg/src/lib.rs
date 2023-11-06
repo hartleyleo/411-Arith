@@ -29,11 +29,6 @@ pub fn prepare_ppm(image: &RgbImage) -> Array2<Vec<csc411_image::Rgb>> {
             pixel_data[(image.width as usize * i as usize) + j as usize] = image.pixels[(image.width as usize * i as usize) + j as usize].clone();
         }
     }
-    
-    // Testing
-    for i in 0..pixel_data.len() {
-        print!("{}", pixel_data);
-    }
 
     // Return Array2
     return Array2::new(pixel_data, width as usize, height as usize);

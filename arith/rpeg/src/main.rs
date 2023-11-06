@@ -1,7 +1,7 @@
-use csc411_image;
-use csc411_arith;
+// use csc411_image;
+// use csc411_arith;
 use std::env;
-use rpeg::codec::{compress, decompress};
+pub use rpeg::codec::{compress, decompress};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -16,4 +16,5 @@ fn main() {
         }
     }
 }
+
 
