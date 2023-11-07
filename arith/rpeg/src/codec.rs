@@ -1,7 +1,10 @@
 use csc411_image;
-use crate::lib::{prepare_ppm};
 use csc411_rpegio;
-use csc411_rpegio::{output_rpeg_data, read_in_rpeg_data};
+// use csc411_image::Write;
+use csc411_image::{Read, RgbImage};
+// use bitpack::bitpack::{newu, news};
+// use csc411_rpegio::{output_rpeg_data, read_in_rpeg_data};
+use crate::lib::{prepare_ppm};
 
 pub fn compress(filename: Option<&str>) {
     

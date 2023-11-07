@@ -1,7 +1,5 @@
-// use csc411_image;
-// use csc411_arith;
 use std::env;
-pub use rpeg::codec::{compress, decompress};
+use rpeg::codec::{compress, decompress};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -9,12 +7,10 @@ fn main() {
     assert!(argnum == 2 || argnum == 3);
     let filename = args.iter().nth(2).unwrap();
     match args[1].as_str() {
-        "-c" => compress(Some(filename)),
-        "-d" => decompress(Some(filename)),
+        "-c" => compress(filename),
+        "-d" => decompress(filename),
         _ => {
             eprintln!("Usage: rpeg -d [filename]\nrpeg -c [filename]")
         }
     }
 }
-
-

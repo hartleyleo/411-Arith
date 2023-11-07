@@ -1,3 +1,5 @@
+pub mod codec;
+
 use csc411_image::{RgbImage, Rgb};
 use array2::Array2;
 
