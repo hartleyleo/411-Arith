@@ -7,10 +7,10 @@ fn main() {
     assert!(argnum == 2 || argnum == 3);
     let filename = args.iter().nth(2).unwrap();
     match args[1].as_str() {
-        "-c" => compress(filename),
-        "-d" => decompress(filename),
+        "-c" => compress(Some(filename)),
+        "-d" => decompress(Some(filename)),
         _ => {
-            eprintln!("Usage: rpeg -d [filename]\nrpeg -c [filename]")
+            eprintln!("Usage: cargo run -- -d [filename]\ncargo run -- -c [filename]")
         }
     }
 }

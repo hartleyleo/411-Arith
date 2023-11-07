@@ -93,4 +93,9 @@ impl<T: Clone> Array2<T> {
             return None;
         }
     }
+
+    pub fn len(&self) -> usize {
+        return self.width * self.height;
+    }
+
 }
