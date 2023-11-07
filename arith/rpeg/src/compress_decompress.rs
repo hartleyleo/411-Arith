@@ -8,7 +8,7 @@ use array2::Array2;
 // Function that reads in an RgbImage, trims off either the last row and/or column
 // to make the image evenly dimensioned, then loads the information into an Array2
 // of rgb values 
-pub fn prepare_ppm(image: &RgbImage) -> Array2<Vec<csc411_image::Rgb>> {
+pub fn prepare_ppm(image: &RgbImage) -> Vec<csc411_image::Rgb> {
 
     let mut width = image.width;
     let mut height = image.height;
@@ -32,7 +32,7 @@ pub fn prepare_ppm(image: &RgbImage) -> Array2<Vec<csc411_image::Rgb>> {
     }
 
     // Return Array2
-    return Array2::new(pixel_data, width as usize, height as usize);
+    return pixel_data;
 
 }
 
