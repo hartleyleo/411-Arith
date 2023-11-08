@@ -28,29 +28,21 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
 
     // For b, c, d, we clamp it to be between the floating point range of -0.3 and 0.3
     a = (a * (511 as f32)).round();
-    b = (b.clamp(-0.3,0.3) * 50).round();
-    c = (c.clamp(-0.3,0.3) * 50).round();
-    d = (d.clamp(-0.3,0.3) * 50).round();
+    b = (b.clamp(-0.3,0.3) * 50.0).round();
+    c = (c.clamp(-0.3,0.3) * 50.0).round();
+    d = (d.clamp(-0.3,0.3) * 50.0).round();
 
     // Calculate average pb
-    let mut avg_pb = (pixels[0].pb + pixels[1].pb + pixels[2].pb + pixels[3].pb) / pixel_total;
+    let avg_pb = (pixels[0].pb + pixels[1].pb + pixels[2].pb + pixels[3].pb) / pixel_total;
     let avg_pb = index_of_chroma(avg_pb as f32);
 
     // Calculate average pr
-    let mut avg_pr = (pixels[0].pr + pixels[1].pr + pixels[2].pr + pixels[3].pr) / pixel_total;
+    let avg_pr = (pixels[0].pr + pixels[1].pr + pixels[2].pr + pixels[3].pr) / pixel_total;
     let avg_pr = index_of_chroma(avg_pr as f32);
 
-    return (a, b, c, d, avg_pb, avg_pr);
+    return PixelBlockValues {a, b, c, d, avg_pb, avg_pr};
 
 }
-
-// Value Type Width LSB
-// a Unsigned scaled integer 9 bits 23
-// b Signed scaled integer 5 bits 18
-// c Signed scaled integer 5 bits 13
-// d Signed scaled integer 5 bits 8
-// index(PB) Unsigned index 4 bits 4
-// index(PR) Unsigned index 4 bits 0
 
 // pub fn inverse_discrete_cosine_transfer() -> todo!() {
 
