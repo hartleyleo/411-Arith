@@ -19,6 +19,16 @@ pub struct Ypbpr {
     pub pr: f32,
 }
 
+#[derive(Clone, Debug)]
+pub struct PixelBlockValues {
+    pub a: f32,
+    pub b: f32,
+    pub c: f32,
+    pub d: f32,
+    pub avg_pb: usize,
+    pub avg_pr: usize,
+}
+
 // Function that reads in an RgbImage, trims off either the last row and/or column
 // to make the image evenly dimensioned, then loads the information into an Array2
 // of rgb values 
@@ -101,13 +111,5 @@ pub fn convert_to_component_video(rbg_float_vec: &Vec<RGBFloat>) -> Vec<Ypbpr> {
 // }
 
 // pub fn convert_to_four_bit() -> todo!() {
-
-// }
-
-// pub fn discrete_cosine_transfer() -> todo!() {
-
-// }
-
-// pub fn inverse_discrete_cosine_transfer() -> todo!() {
 
 // }

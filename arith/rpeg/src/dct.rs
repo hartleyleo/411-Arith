@@ -1,0 +1,51 @@
+use csc411_image::{RgbImage, Rgb};
+use array2::Array2;
+use csc411_arith::index_of_chroma;
+use csc411_arith::chroma_of_index;
+use crate::compress_decompress::Ypbpr;
+use crate::compress_decompress::PixelBlockValues;
+
+pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
+    
+    // Use this for simplification of division for averages
+    let pixel_total: f32 = pixels.len() as f32;
+
+    // Calculate a, b, c, d
+    // -----------------------------------------------------
+    // Based on formula provided in assignment description:
+    // a = (Y4 + Y3 + Y2 + Y1)/4.0
+    // b = (Y4 + Y3 − Y2 − Y1)/4.0
+    // c = (Y4 − Y3 + Y2 − Y1)/4.0
+    // d = (Y4 − Y3 − Y2 + Y1)/4.0
+    // If we imagine these Y's as the pixel in the 2x2 vec's y values, 
+    //       ( Y1 Y2 )   as    ( 0.y 1.y )
+    //       ( Y3 Y4 )   ->    ( 2.y 3.y )
+    // then we can calculate as follows:
+    let mut a: f32 = (pixels[0].y + pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
+    let mut b: f32 = (-pixels[0].y - pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
+    let mut c: f32 = (-pixels[0].y + pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
+    let mut d: f32 = (pixels[0].y - pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
+
+    // Calculate average pb
+    let mut avg_pb = (pixels[0].pb + pixels[1].pb + pixels[2].pb + pixels[3].pb) / pixel_total;
+    let avg_pb = index_of_chroma(avg_pb as f32);
+
+    // Calculate average pr
+    let mut avg_pr = (pixels[0].pr + pixels[1].pr + pixels[2].pr + pixels[3].pr) / pixel_total;
+    let avg_pr = index_of_chroma(avg_pr as f32);
+
+    return (a, b, c, d, avg_pb, avg_pr);
+
+}
+
+// Value Type Width LSB
+// a Unsigned scaled integer 9 bits 23
+// b Signed scaled integer 5 bits 18
+// c Signed scaled integer 5 bits 13
+// d Signed scaled integer 5 bits 8
+// index(PB) Unsigned index 4 bits 4
+// index(PR) Unsigned index 4 bits 0
+
+// pub fn inverse_discrete_cosine_transfer() -> todo!() {
+
+// }
