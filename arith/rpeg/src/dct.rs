@@ -26,6 +26,12 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
     let mut c: f32 = (-pixels[0].y + pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
     let mut d: f32 = (pixels[0].y - pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
 
+    // For b, c, d, we clamp it to be between the floating point range of -0.3 and 0.3
+    a = (a * (511 as f32)).round();
+    b = (b.clamp(-0.3,0.3) * 50).round();
+    c = (c.clamp(-0.3,0.3) * 50).round();
+    d = (d.clamp(-0.3,0.3) * 50).round();
+
     // Calculate average pb
     let mut avg_pb = (pixels[0].pb + pixels[1].pb + pixels[2].pb + pixels[3].pb) / pixel_total;
     let avg_pb = index_of_chroma(avg_pb as f32);
