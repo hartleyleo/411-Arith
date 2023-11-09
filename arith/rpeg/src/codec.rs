@@ -70,9 +70,12 @@ pub fn decompress(filename: Option<&str>) {
     // ( 4 5 ) ( 6 7 )
 
     // Translate these component video pixels into an rgb float vector
+    // let rgb_float_image = convert_component_video_to_rgb_float();
 
-    // Translate the rgb float vector into rgb values
+    // // Translate the rgb float vector into rgb values
+    // let rgb_image = convert_rgb_float_to_rgb(&rgb_float_image);
 
-    // Create a PPM image from these rgb values
+    // // Create a PPM image from these rgb values
+    // let image = convert_rgb_to_rgb_image(&rgb_vec, width, height, denominator);
 
 }

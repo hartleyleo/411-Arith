@@ -1,5 +1,4 @@
 use csc411_image::{RgbImage, Rgb};
-use array2::Array2;
 use csc411_arith::index_of_chroma;
 use csc411_arith::chroma_of_index;
 use crate::compress_decompress::Ypbpr;
@@ -28,9 +27,9 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
 
     // For b, c, d, we clamp it to be between the floating point range of -0.3 and 0.3
     a = (a * (511 as f32)).round();
-    b = (b.clamp(-0.3,0.3) * 50.0).round();
-    c = (c.clamp(-0.3,0.3) * 50.0).round();
-    d = (d.clamp(-0.3,0.3) * 50.0).round();
+    b = (b.clamp(-0.3,0.3) * (50 as f32)).round();
+    c = (c.clamp(-0.3,0.3) * (50 as f32)).round();
+    d = (d.clamp(-0.3,0.3) * (50 as f32)).round();
 
     // Calculate average pb
     let avg_pb = (pixels[0].pb + pixels[1].pb + pixels[2].pb + pixels[3].pb) / pixel_total;
@@ -44,6 +43,27 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
 
 }
 
-// pub fn inverse_discrete_cosine_transfer() -> todo!() {
+pub fn inverse_discrete_cosine_transfer(pixel: PixelBlockValues) -> Vec<Ypbpr> {
 
-// }
+    let mut pixels = Vec::new();
+
+    // Calculate Y1, Y2, Y3, Y4
+    // -----------------------------------------------------
+    // Based on formula provided in assignment description:
+    // Y1 = a − b − c + d
+    // Y2 = a − b + c − d
+    // Y3 = a + b − c − d
+    // Y4 = a + b + c + d
+    // Then we can calculate as follows: 
+    let mut y_vec = Vec::new();
+    y_vec.push((pixel.a - pixel.b - pixel.c + pixel.d) as f32);
+    y_vec.push((pixel.a - pixel.b + pixel.c - pixel.d) as f32);
+    y_vec.push((pixel.a + pixel.b + pixel.c + pixel.d) as f32);
+    y_vec.push((pixel.a + pixel.b - pixel.c - pixel.d) as f32);
+
+    for i in 0..y_vec.len() {
+        pixels.push(Ypbpr {y: y_vec[i] as f32, pb: pixel.avg_pb as f32, pr: pixel.avg_pr as f32});
+    }
+    
+    return pixels;
+}

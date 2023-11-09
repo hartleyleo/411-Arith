@@ -1,6 +1,5 @@
 
 use csc411_image::{RgbImage, Rgb};
-use array2::Array2;
 
 // Documenatation:
 // RgbImage: https://docs.rs/csc411_image/latest/csc411_image/struct.RgbImage.html
@@ -136,6 +135,8 @@ pub fn convert_rgb_to_rgb_image(rgb_vec: &Vec<Rgb>, discovered_width: u32, disco
 }
 
 // pub fn write_to_standard_output() -> todo!() {
+
+//     println!("Compressed image format 2\n{} {}", width, height);
 
 // }
 
