@@ -4,6 +4,8 @@ use csc411_arith::chroma_of_index;
 use crate::compress_decompress::Ypbpr;
 use crate::compress_decompress::PixelBlockValues;
 
+// Function takes in a vector filled with 4 pixels of component video (ypbpr) type
+// then it will convert this block into our custom struct type PixelBlockValues
 pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
     
     // Use this for simplification of division for averages
@@ -17,8 +19,8 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
     // c = (Y4 − Y3 + Y2 − Y1)/4.0
     // d = (Y4 − Y3 − Y2 + Y1)/4.0
     // If we imagine these Y's as the pixel in the 2x2 vec's y values, 
-    //       ( Y1 Y2 )   as    ( 0.y 1.y )
-    //       ( Y3 Y4 )   ->    ( 2.y 3.y )
+    //       ( Y1 Y2 )   as    ( [0].y [1].y )
+    //       ( Y3 Y4 )   ->    ( [2].y [3].y )
     // then we can calculate as follows:
     let mut a: f32 = (pixels[0].y + pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
     let mut b: f32 = (-pixels[0].y - pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;

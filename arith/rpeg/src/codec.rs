@@ -1,12 +1,11 @@
 use csc411_image;
 use csc411_rpegio;
 use csc411_image::{Read, RgbImage};
-use crate::compress_decompress::{prepare_ppm, convert_rgb_to_rgb_float, convert_rgb_float_to_component_video};
+use crate::compress_decompress::{prepare_ppm, convert_rgb_to_rgb_float, convert_rgb_float_to_component_video, pack_as_32_bit};
 use crate::transform::{discrete_cosine_transfer};
 use crate::compress_decompress::Ypbpr;
 use crate::compress_decompress::PixelBlockValues;
-// use bitpack::bitpack::{newu, news};
-// use csc411_rpegio::{output_rpeg_data, read_in_rpeg_data};
+use csc411_rpegio::{output_rpeg_data, read_in_rpeg_data};
 // use csc411_image::Write;
 
 pub fn compress(filename: Option<&str>) {
@@ -52,7 +51,10 @@ pub fn compress(filename: Option<&str>) {
     }
     
     // Bitpack
-
+    let compressed_image = pack_as_32_bit(averaged_pixels);
+    
+    // Write to output
+    output_rpeg_data(&compressed_image, width, height);
 }
 
 pub fn decompress(filename: Option<&str>) {

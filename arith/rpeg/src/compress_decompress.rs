@@ -1,8 +1,15 @@
 
 use csc411_image::{RgbImage, Rgb};
+use bitpack::bitpack::{newu, news};
 
 // Documenatation:
+// Rgb: https://docs.rs/csc411_image/latest/csc411_image/imgtype/struct.Rgb.html
 // RgbImage: https://docs.rs/csc411_image/latest/csc411_image/struct.RgbImage.html
+// Vecs: https://doc.rust-lang.org/std/vec/struct.Vec.html
+
+// ------------------------------------------
+//           Custom Data Structs
+// ------------------------------------------
 
 #[derive(Clone, Debug)]
 pub struct RGBFloat {
@@ -86,6 +93,25 @@ pub fn convert_rgb_float_to_component_video(rbg_float_vec: &Vec<RGBFloat>) -> Ve
         .collect();
 
     return component_video_per_pixel;
+}
+
+pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<0_u64>{
+    
+    let mut final_image = Vec::new();
+    for i in 0..compression_vec.len() {
+        let mut word = 0_u64;
+        word = newu(word, XX, 23, compression_vec[i].a as u64 );
+        word = news(word, XX, 18, compression_vec[i].b as i64 );
+        word = news(word, XX, XX, compression_vec[i].c as i64 );
+        word = news(word, XX, XX, compression_vec[i].d as i64 );
+        word = newu(word, XX, XX, compression_vec[i].avg_pb as u64 );
+        word = newu(word, XX, 0, compression_vec[i].avg_pr as u64 );
+        final_image.push(word as u32).to_be_bytes();
+
+        // no clue what these values inside have to be lmao
+    }
+
+    return final_image;
 }
 
 // -----------------------------------------------------------------------------------
