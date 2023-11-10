@@ -1,6 +1,6 @@
 
 use csc411_image::{RgbImage, Rgb};
-use bitpack::bitpack::{newu, news};
+use bitpack::bitpack::{newu, news, getu, gets};
 
 // Documenatation:
 // Rgb: https://docs.rs/csc411_image/latest/csc411_image/imgtype/struct.Rgb.html
@@ -100,15 +100,13 @@ pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<0_u64>{
     let mut final_image = Vec::new();
     for i in 0..compression_vec.len() {
         let mut word = 0_u64;
-        word = newu(word, XX, 23, compression_vec[i].a as u64 );
-        word = news(word, XX, 18, compression_vec[i].b as i64 );
-        word = news(word, XX, XX, compression_vec[i].c as i64 );
-        word = news(word, XX, XX, compression_vec[i].d as i64 );
-        word = newu(word, XX, XX, compression_vec[i].avg_pb as u64 );
-        word = newu(word, XX, 0, compression_vec[i].avg_pr as u64 );
-        final_image.push(word as u32).to_be_bytes();
-
-        // no clue what these values inside have to be lmao
+        word = newu(word, 9, 23, compression_vec[i].a as u64 ).unwrap();
+        word = news(word, 5, 18, compression_vec[i].b as i64 ).unwrap();
+        word = news(word, 5, 13, compression_vec[i].c as i64 ).unwrap();
+        word = news(word, 5, 8, compression_vec[i].d as i64 ).unwrap();
+        word = newu(word, 4, 4, compression_vec[i].avg_pb as u64 ).unwrap();
+        word = newu(word, 4, 0, compression_vec[i].avg_pr as u64 ).unwrap();
+        final_image.push((word as u32).to_be_bytes());
     }
 
     return final_image;
@@ -160,12 +158,20 @@ pub fn convert_rgb_to_rgb_image(rgb_vec: &Vec<Rgb>, discovered_width: u32, disco
 
 }
 
-// pub fn write_to_standard_output() -> todo!() {
+pub fn unpack_to_pixel_values(decompression_vec: &Vec<0_u64>) -> Vec<PixelBlockValues>{
+    
+    let unpacked_pixel_vec = Vec::new();
+    for el in 0..decompression_vec.len() {
+        let word = u32::from_be_bytes(el);
+        let decompressed_a = getu(word as u64, 9, 23);
+        let decompressed_b = gets(word as u64, 5, 18);
+        let decompressed_c = gets(word as u64, 5, 13);
+        let decompressed_d = gets(word as u64, 5, 8);
+        let decompressed_avg_pb = getu(word as u64, 4, 4);
+        let decompressed_avg_pr = getu(word as u64, 4, 0);
 
-//     println!("Compressed image format 2\n{} {}", width, height);
+        unpacked_pixel_vec.push(PixelBlockValues {a: decompressed_a as f32, b: decompressed_b as f32, c: decompressed_c as f32, d: decompressed_d as f32, avg_pb: decompressed_avg_pb as usize, avg_pr: decompressed_avg_pr as usize});
+    }
 
-// }
-
-// pub fn convert_to_four_bit() -> todo!() {
-
-// }
+    return unpacked_pixel_vec;
+}

@@ -1,6 +1,5 @@
 use csc411_image::{RgbImage, Rgb};
 use csc411_arith::index_of_chroma;
-use csc411_arith::chroma_of_index;
 use crate::compress_decompress::Ypbpr;
 use crate::compress_decompress::PixelBlockValues;
 
