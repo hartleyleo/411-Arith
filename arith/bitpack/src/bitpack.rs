@@ -85,7 +85,12 @@ pub fn newu(word: u64, width: u64, lsb: u64, value: u64) -> Option<u64> {
 /// * `lsb`: the least-significant bit of the bit field
 /// * `value`: the signed value to place into that bit field
 pub fn news(word: u64, width: u64, lsb: u64, value: i64) -> Option<u64> {
-    Some(0) // This function mad weird
+    if fitss(value, width){
+        Some(((((!(-1_i64 << width)) & value) as i64) as u64) << lsb | word)
+    }
+    else{
+        None
+    }
 }
 
 
