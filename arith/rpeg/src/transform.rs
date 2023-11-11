@@ -44,7 +44,7 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
 
 }
 
-pub fn inverse_discrete_cosine_transfer(pixel: PixelBlockValues) -> Vec<Ypbpr> {
+pub fn inverse_discrete_cosine_transfer(pixel: &PixelBlockValues) -> Vec<Ypbpr> {
 
     let mut pixels = Vec::new();
 

@@ -95,7 +95,7 @@ pub fn convert_rgb_float_to_component_video(rbg_float_vec: &Vec<RGBFloat>) -> Ve
     return component_video_per_pixel;
 }
 
-pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<0_u64>{
+pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<[u8; 4]>{
     
     let mut final_image = Vec::new();
     for i in 0..compression_vec.len() {
@@ -158,11 +158,12 @@ pub fn convert_rgb_to_rgb_image(rgb_vec: &Vec<Rgb>, discovered_width: u32, disco
 
 }
 
-pub fn unpack_to_pixel_values(decompression_vec: &Vec<0_u64>) -> Vec<PixelBlockValues>{
+pub fn unpack_to_pixel_values(_word_vec: Vec<[u8; 4]>) -> Vec<PixelBlockValues>{
     
-    let unpacked_pixel_vec = Vec::new();
-    for el in 0..decompression_vec.len() {
-        let word = u32::from_be_bytes(el);
+    let mut unpacked_pixel_vec = Vec::new();
+    let words: Vec<u32> = _word_vec.into_iter().map(u32::from_be_bytes).collect();
+
+    for word in 0..words.len() {
         let decompressed_a = getu(word as u64, 9, 23);
         let decompressed_b = gets(word as u64, 5, 18);
         let decompressed_c = gets(word as u64, 5, 13);
