@@ -147,17 +147,6 @@ pub fn convert_rgb_float_to_rgb(rbg_float_vec: &Vec<RGBFloat>) -> Vec<csc411_ima
     return pixel_data;
 }
 
-pub fn convert_rgb_to_rgb_image(rgb_vec: &Vec<Rgb>, discovered_width: u32, discovered_height: u32, discovered_denominator: u16) -> RgbImage {
-
-    return RgbImage {
-        pixels: rgb_vec.to_vec(),
-        width: discovered_width,
-        height: discovered_height,
-        denominator: discovered_denominator,
-    };
-
-}
-
 pub fn unpack_to_pixel_values(_word_vec: Vec<[u8; 4]>) -> Vec<PixelBlockValues>{
     
     let mut unpacked_pixel_vec = Vec::new();

@@ -1,7 +1,7 @@
 use csc411_image;
 use csc411_rpegio;
 use csc411_image::{Read, RgbImage};
-use crate::compress_decompress::{prepare_ppm, convert_rgb_to_rgb_float, convert_rgb_float_to_component_video, pack_as_32_bit, convert_rgb_to_rgb_image, convert_rgb_float_to_rgb, convert_component_video_to_rgb_float, unpack_to_pixel_values};
+use crate::compress_decompress::{prepare_ppm, convert_rgb_to_rgb_float, convert_rgb_float_to_component_video, pack_as_32_bit, convert_rgb_float_to_rgb, convert_component_video_to_rgb_float, unpack_to_pixel_values};
 use crate::transform::{discrete_cosine_transfer, inverse_discrete_cosine_transfer};
 use crate::compress_decompress::Ypbpr;
 use crate::compress_decompress::PixelBlockValues;
@@ -28,11 +28,25 @@ pub fn compress(filename: Option<&str>) {
     // Load image into a Vec<Rgb>
     let rgb_image = prepare_ppm(&image, width, height);
 
+    // print!("Compression-----------------------------");
+
+    // for i in 0..rgb_image.len() {
+    //     print!("rgb_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_image[i].red, rgb_image[i].green, rgb_image[i].blue);
+    // }
+
     // Translate the rgb vec into a vec with floating points for the rgb values
     let rgb_float_image = convert_rgb_to_rgb_float(&rgb_image, image.denominator);
 
+    // for i in 0..rgb_float_image.len() {
+    //     print!("rgb_float_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_float_image[i].r, rgb_float_image[i].g, rgb_float_image[i].b);
+    // }
+
     // Translate the rgb float image into a vec of custom struct: Ypbpr
     let component_video_image = convert_rgb_float_to_component_video(&rgb_float_image);
+
+    // for i in 0..component_video_image.len() {
+    //     print!("component_video_image: index: {}, y: {}, pb: {}, pr: {}\n", i, component_video_image[i].y, component_video_image[i].pb, component_video_image[i].pr);
+    // }
 
     // Collect pixels into squares and feed them into the discrete cosine transfer function
     let mut averaged_pixels: Vec<PixelBlockValues> =  Vec::new();
@@ -49,6 +63,10 @@ pub fn compress(filename: Option<&str>) {
             pixel_square = Vec::new();
         }
     }
+
+    // for i in 0..averaged_pixels.len() {
+    //     print!("averaged_pixels: index: {} - a: {}, b: {}, c: {}, d: {}, avg_pb: {}, avg_pr: {}\n", i, averaged_pixels[i].a, averaged_pixels[i].b, averaged_pixels[i].c, averaged_pixels[i].d, averaged_pixels[i].avg_pb, averaged_pixels[i].avg_pr);
+    // }
     
     // Bitpack
     let final_image = pack_as_32_bit(&averaged_pixels);
@@ -59,6 +77,7 @@ pub fn compress(filename: Option<&str>) {
 
 pub fn decompress(filename: Option<&str>) {
     
+    // print!("Decompression------------------------------");
     // Load in compressed image
     let (_word_vec, _width, _height) = csc411_rpegio::input_rpeg_data(filename).unwrap();
 
@@ -88,14 +107,31 @@ pub fn decompress(filename: Option<&str>) {
         }
     }
 
+    // for i in 0..component_video_image.len() {
+    //     print!("component_video_image: index: {}, y: {}, pb: {}, pr: {}\n", i, component_video_image[i].y, component_video_image[i].pb, component_video_image[i].pr);
+    // }
+
     // Translate these component video pixels into an rgb float vector
     let rgb_float_image = convert_component_video_to_rgb_float(&component_video_image);
+
+    // for i in 0..rgb_float_image.len() {
+    //     print!("rgb_float_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_float_image[i].r, rgb_float_image[i].g, rgb_float_image[i].b);
+    // }
 
     // // Translate the rgb float vector into rgb values
     let rgb_image = convert_rgb_float_to_rgb(&rgb_float_image);
 
-    // // Create a PPM image from these rgb values
-    let image = convert_rgb_to_rgb_image(&rgb_image, _width as u32, _height as u32, 255);
+    // for i in 0..rgb_image.len() {
+    //     print!("rgb_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_image[i].red, rgb_image[i].green, rgb_image[i].blue);
+    // }
+
+    // Create a PPM image from these rgb values
+    let image = RgbImage {
+        pixels: rgb_image,
+        width: _width as u32,
+        height: _height as u32,
+        denominator: 255 as u16,
+    };
 
     image.write(None).unwrap();
 
