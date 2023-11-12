@@ -55,12 +55,18 @@ pub fn inverse_discrete_cosine_transfer(pixel: &PixelBlockValues) -> Vec<Ypbpr> 
     // Y2 = a − b + c − d
     // Y3 = a + b − c − d
     // Y4 = a + b + c + d
-    // Then we can calculate as follows: 
+    // We must first get the a, b, c, and d values:
+    let a: f32 = pixel.a as f32 / (511 as f32).clamp(0.0,1.0);
+    let b: f32 = pixel.b as f32 / (50 as f32).clamp(-0.3,0.3);
+    let c: f32 = pixel.c as f32 / (50 as f32).clamp(-0.3,0.3);
+    let d: f32 = pixel.d as f32 / (50 as f32).clamp(-0.3,0.3);
+
+    // Then we calculate as follows: 
     let mut y_vec = Vec::new();
-    y_vec.push(((pixel.a - pixel.b - pixel.c + pixel.d) as f32 / (511 as f32)).clamp(0.0,1.0));
-    y_vec.push(((pixel.a - pixel.b + pixel.c - pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
-    y_vec.push(((pixel.a + pixel.b + pixel.c + pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
-    y_vec.push(((pixel.a + pixel.b - pixel.c - pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
+    y_vec.push(a - b - c + d);
+    y_vec.push(a - b + c - d);
+    y_vec.push(a + b - c - d);
+    y_vec.push(a + b + c + d);
 
     let pb = chroma_of_index(pixel.avg_pb as usize);
     let pr = chroma_of_index(pixel.avg_pr as usize);

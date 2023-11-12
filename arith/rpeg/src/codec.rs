@@ -77,7 +77,6 @@ pub fn compress(filename: Option<&str>) {
 
 pub fn decompress(filename: Option<&str>) {
     
-    // print!("Decompression------------------------------");
     // Load in compressed image
     let (word_vec, _width, _height) = csc411_rpegio::input_rpeg_data(filename).unwrap();
 
@@ -106,24 +105,11 @@ pub fn decompress(filename: Option<&str>) {
             component_video_image[((_width * (i+1)) + (j+1)) as usize] = decompressed_pixels[i][3].clone();
         }
     }
-
-    // for i in 0..component_video_image.len() {
-    //     print!("component_video_image: index: {}, y: {}, pb: {}, pr: {}\n", i, component_video_image[i].y, component_video_image[i].pb, component_video_image[i].pr);
-    // }
-
     // Translate these component video pixels into an rgb float vector
     let rgb_float_image = convert_component_video_to_rgb_float(&component_video_image);
 
-    // for i in 0..rgb_float_image.len() {
-    //     print!("rgb_float_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_float_image[i].r, rgb_float_image[i].g, rgb_float_image[i].b);
-    // }
-
     // // Translate the rgb float vector into rgb values
     let rgb_image = convert_rgb_float_to_rgb(&rgb_float_image);
-
-    // for i in 0..rgb_image.len() {
-    //     print!("rgb_image: index: {}, r: {}, g: {}, b: {}\n", i, rgb_image[i].red, rgb_image[i].green, rgb_image[i].blue);
-    // }
 
     // Create a PPM image from these rgb values
     let image = RgbImage {
