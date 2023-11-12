@@ -79,10 +79,10 @@ pub fn decompress(filename: Option<&str>) {
     
     // print!("Decompression------------------------------");
     // Load in compressed image
-    let (_word_vec, _width, _height) = csc411_rpegio::input_rpeg_data(filename).unwrap();
+    let (word_vec, _width, _height) = csc411_rpegio::input_rpeg_data(filename).unwrap();
 
     // Unpack compressed image to PixelBlockValues type vec
-    let unpacked_pixel_vec = unpack_to_pixel_values(_word_vec);
+    let unpacked_pixel_vec = unpack_to_pixel_values(word_vec);
 
     // Create a vector that is four times the size of the unpacked compressed image
     // Run them through the inverse discrete cosine transfer, and then place them back

@@ -108,7 +108,6 @@ pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<[u8; 4]>{
         word = newu(word, 4, 0, compression_vec[i].avg_pr as u64 ).unwrap();
         final_image.push((word as u32).to_be_bytes());
     }
-
     return final_image;
 }
 

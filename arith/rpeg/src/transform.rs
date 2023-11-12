@@ -1,5 +1,5 @@
 use csc411_image::{RgbImage, Rgb};
-use csc411_arith::index_of_chroma;
+use csc411_arith::{index_of_chroma, chroma_of_index};
 use crate::compress_decompress::Ypbpr;
 use crate::compress_decompress::PixelBlockValues;
 
@@ -21,10 +21,10 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
     //       ( Y1 Y2 )   as    ( [0].y [1].y )
     //       ( Y3 Y4 )   ->    ( [2].y [3].y )
     // then we can calculate as follows:
-    let mut a: f32 = (pixels[0].y + pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
-    let mut b: f32 = (-pixels[0].y - pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
-    let mut c: f32 = (-pixels[0].y + pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
-    let mut d: f32 = (pixels[0].y - pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
+    let mut a = (pixels[0].y + pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
+    let mut b = (-pixels[0].y - pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
+    let mut c = (-pixels[0].y + pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
+    let mut d = (pixels[0].y - pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
 
     // For b, c, d, we clamp it to be between the floating point range of -0.3 and 0.3
     a = (a * (511 as f32)).round();
@@ -57,13 +57,16 @@ pub fn inverse_discrete_cosine_transfer(pixel: &PixelBlockValues) -> Vec<Ypbpr> 
     // Y4 = a + b + c + d
     // Then we can calculate as follows: 
     let mut y_vec = Vec::new();
-    y_vec.push((pixel.a - pixel.b - pixel.c + pixel.d) as f32);
-    y_vec.push((pixel.a - pixel.b + pixel.c - pixel.d) as f32);
-    y_vec.push((pixel.a + pixel.b + pixel.c + pixel.d) as f32);
-    y_vec.push((pixel.a + pixel.b - pixel.c - pixel.d) as f32);
+    y_vec.push(((pixel.a - pixel.b - pixel.c + pixel.d) as f32 / (511 as f32)).clamp(0.0,1.0));
+    y_vec.push(((pixel.a - pixel.b + pixel.c - pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
+    y_vec.push(((pixel.a + pixel.b + pixel.c + pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
+    y_vec.push(((pixel.a + pixel.b - pixel.c - pixel.d) as f32 / (50 as f32)).clamp(-0.3,0.3));
+
+    let pb = chroma_of_index(pixel.avg_pb as usize);
+    let pr = chroma_of_index(pixel.avg_pr as usize);
 
     for i in 0..y_vec.len() {
-        pixels.push(Ypbpr {y: y_vec[i] as f32, pb: pixel.avg_pb as f32, pr: pixel.avg_pr as f32});
+        pixels.push(Ypbpr {y: y_vec[i] as f32, pb: pb as f32, pr: pr as f32});
     }
     
     return pixels;
