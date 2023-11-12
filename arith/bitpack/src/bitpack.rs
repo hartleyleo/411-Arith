@@ -96,9 +96,45 @@ pub fn news(word: u64, width: u64, lsb: u64, value: i64) -> Option<u64> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    fn fitss_range_test() {
+        assert_eq!(fitss(7, 5), true);
+        assert_eq!(fitss(-4, 3), true);
+        assert_eq!(fitss(9001, 5), false);
+        assert_eq!(fitss(31, 5), false);
+    }
+
+    #[test]
+    fn fitsu_range_test() {
+        assert_eq!(fitsu(17, 5), true);
+        assert_eq!(fitsu(7, 3), true);
+        assert_eq!(fitsu(9001, 5), false);
+        assert_eq!(fitsu(31, 5), true);    
+    }
+
+    #[test]
+    fn gets_test() {
+        let test_case: i64 = gets(!0_u64, 64, 0);
+        assert_eq!(test_case, -1_i64);
+        assert_eq!(gets(9998212, 24, 6), 156222);
+    }
+
+    #[test]
+    fn getu_test() {
+        let test_case: u64 = getu(!0_u64, 64, 0);
+        assert_eq!(test_case, !0_u64);
+        assert_eq!(getu(9998212, 24, 6), 156222);
+    }
+
+    #[test]
+    fn newu_test() {
+        assert_eq!(newu(255, 4, 1, 7 as u64).unwrap(), 255);
+    }
+    
+    #[test]
+    fn news_test() {
+        assert_eq!(news(0_u64, 9, 23, -0.98 as i64).unwrap(), 0);
     }
 }
