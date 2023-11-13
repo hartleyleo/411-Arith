@@ -21,10 +21,11 @@ pub fn discrete_cosine_transfer(pixels: Vec<Ypbpr>) -> PixelBlockValues {
     //       ( Y1 Y2 )   as    ( [0].y [1].y )
     //       ( Y3 Y4 )   ->    ( [2].y [3].y )
     // then we can calculate as follows:
-    let mut a = (pixels[0].y + pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
-    let mut b = (-pixels[0].y - pixels[1].y + pixels[2].y + pixels[3].y) / pixel_total;
-    let mut c = (-pixels[0].y + pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
-    let mut d = (pixels[0].y - pixels[1].y - pixels[2].y + pixels[3].y) / pixel_total;
+    let mut a = (pixels[3].y + pixels[2].y + pixels[1].y + pixels[0].y) / pixel_total;
+    let mut b = (pixels[3].y + pixels[2].y - pixels[1].y - pixels[0].y) / pixel_total;
+    let mut c = (pixels[3].y - pixels[2].y + pixels[1].y - pixels[0].y) / pixel_total;
+    let mut d = (pixels[3].y - pixels[2].y - pixels[1].y + pixels[0].y) / pixel_total;
+
 
     // For b, c, d, we clamp it to be between the floating point range of -0.3 and 0.3
     a = (a * (511 as f32)).round();
@@ -56,10 +57,10 @@ pub fn inverse_discrete_cosine_transfer(pixel: &PixelBlockValues) -> Vec<Ypbpr> 
     // Y3 = a + b − c − d
     // Y4 = a + b + c + d
     // We must first get the a, b, c, and d values:
-    let a: f32 = pixel.a as f32 / (511 as f32).clamp(0.0,1.0);
-    let b: f32 = pixel.b as f32 / (50 as f32).clamp(-0.3,0.3);
-    let c: f32 = pixel.c as f32 / (50 as f32).clamp(-0.3,0.3);
-    let d: f32 = pixel.d as f32 / (50 as f32).clamp(-0.3,0.3);
+    let a: f32 = (pixel.a as f32 / (511 as f32)).clamp(0.0,1.0);
+    let b: f32 = (pixel.b as f32 / (50 as f32)).clamp(-0.3,0.3);
+    let c: f32 = (pixel.c as f32 / (50 as f32)).clamp(-0.3,0.3);
+    let d: f32 = (pixel.d as f32 / (50 as f32)).clamp(-0.3,0.3);
 
     // Then we calculate as follows: 
     let mut y_vec = Vec::new();

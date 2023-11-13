@@ -95,17 +95,23 @@ pub fn convert_rgb_float_to_component_video(rbg_float_vec: &Vec<RGBFloat>) -> Ve
     return component_video_per_pixel;
 }
 
+/// Function packs a group of a, b, c, d, avg_pb, avg_pr, values with bitshifting
 pub fn pack_as_32_bit(compression_vec: &Vec<PixelBlockValues>) -> Vec<[u8; 4]>{
     
     let mut final_image = Vec::new();
     for i in 0..compression_vec.len() {
+
+        // Create a word to store information in
         let mut word = 0_u64;
+
+        // Bitshift our values into the word at certain points
         word = newu(word, 9, 23, compression_vec[i].a as u64 ).unwrap();
         word = news(word, 5, 18, compression_vec[i].b as i64 ).unwrap();
         word = news(word, 5, 13, compression_vec[i].c as i64 ).unwrap();
         word = news(word, 5, 8, compression_vec[i].d as i64 ).unwrap();
         word = newu(word, 4, 4, compression_vec[i].avg_pb as u64 ).unwrap();
         word = newu(word, 4, 0, compression_vec[i].avg_pr as u64 ).unwrap();
+        
         final_image.push((word as u32).to_be_bytes());
     }
     return final_image;
@@ -133,25 +139,31 @@ pub fn convert_component_video_to_rgb_float(component_video_pixel_vec: &Vec<Ypbp
     return rgb_float_vec;
 }
 
+/// Function converts the rgb float image to an rgb image
 pub fn convert_rgb_float_to_rgb(rbg_float_vec: &Vec<RGBFloat>) -> Vec<csc411_image::Rgb>{
 
     let pixel_data: Vec<csc411_image::Rgb> = rbg_float_vec.iter()
         .map(|el| csc411_image::Rgb {
-            red: el.r as u16, 
-            green: el.g as u16,
-            blue: el.b as u16,
+            red: (el.r * 255 as f32) as u16, 
+            green: (el.g * 255 as f32) as u16,
+            blue: (el.b * 255 as f32) as u16,
         })
         .collect();
 
     return pixel_data;
 }
 
+/// Function unpacks the pixel values from the raw bytes using bitshifting
 pub fn unpack_to_pixel_values(_word_vec: Vec<[u8; 4]>) -> Vec<PixelBlockValues>{
     
     let mut unpacked_pixel_vec = Vec::new();
-    let words: Vec<u32> = _word_vec.into_iter().map(u32::from_be_bytes).collect();
+    
+    for el in _word_vec {
 
-    for word in 0..words.len() {
+        // Collects the word from the raw bytes to be decompressed
+        let word = u32::from_be_bytes(el);
+
+        // Decompresses the word at points to get the a, b, c, d, avg_pb, and avg_pr values
         let decompressed_a = getu(word as u64, 9, 23);
         let decompressed_b = gets(word as u64, 5, 18);
         let decompressed_c = gets(word as u64, 5, 13);
