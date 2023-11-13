@@ -18,12 +18,11 @@ did was implement the functions and unit tests.
 
 Our rpeg solution has a lot more steps. First for compression, we receive 
 input from the user and trim the image to even dimensions. Afterwards, we
-look at every 2x2 block of pixels and copy the rgb values. From there, we
 convert the rgb float image to component video ( Y | Pb | Pr ). We can then
-compute the average of Pb and Pr values using the index_of_chroma method
-in the csc411_arith library and convert the y values to a, b, c, and d
-values. We can perform operations on these values using our bitpack module
-and get the appropriate binary values for our pixels. 
+look at 2x2 blocks of pixels compute the average of Pb and Pr values using 
+the index_of_chroma method in the csc411_arith library and convert the y 
+values to a, b, c, and d values. We can perform operations on these values 
+using our bitpack module and get the appropriate binary values for our pixels. 
 
 For decompression, we start with a compressed image of binary words and uses
 the bitpack module to convert these words to their appropriate decimal values.
