@@ -127,4 +127,8 @@ impl<T: Clone> Array2<T> {
     pub fn get_mut(&mut self, c: usize, r: usize) -> Option<&mut T> {
         self.get_index(c, r).map(move |index| &mut self.linear_array[index])
     }
+
+    pub fn len(&self) -> usize {
+        return self.width * self.height;
+    }
 }

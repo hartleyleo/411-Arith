@@ -1,5 +1,3 @@
-use csc411_image;
-use csc411_arith;
 use std::env;
 use rpeg::codec::{compress, decompress};
 
@@ -12,8 +10,7 @@ fn main() {
         "-c" => compress(Some(filename)),
         "-d" => decompress(Some(filename)),
         _ => {
-            eprintln!("Usage: rpeg -d [filename]\nrpeg -c [filename]")
+            eprintln!("Usage: cargo run -- -d [filename]\ncargo run -- -c [filename]")
         }
     }
 }
-
